@@ -7,7 +7,8 @@ Deploy the code in this repo following the same steps as outlined in [this](http
 
 ## Troubleshooting
 
-### List the deployment, it shows upcommerce-app-two deployment Ready 0/1 whereas it should show Ready 1/1
+### List the deployment
+It shows upcommerce-app-two deployment Ready 0/1 whereas it should show Ready 1/1
 ```
 kubectl get deployment -n sre
 NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
