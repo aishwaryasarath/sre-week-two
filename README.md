@@ -60,7 +60,33 @@ Codespace free tier can have only a max of 1 cpu. Anything more than that fails.
 ## Fix
 
 ### Current code of deployment
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upcommerce-app-two
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upcommerce-app-two
+  template:
+    metadata:
+      labels:
+        app: upcommerce-app-two
+    spec:
+      containers:
+        - name: upcommerce
+          image: uonyeka/upcommerce:v3
+          ports:
+            - containerPort: 5000
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "10"
+              memory: "4Gi"
 
+```
 
 ### Change the cpu as below
 ```
