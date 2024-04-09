@@ -90,9 +90,9 @@ The message in the pod description above shows
 ```
 0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod..
 ```
-### Troubleshoot
 
-#### Check minikube allocatable CPUs.
+
+### Check minikube allocatable CPUs.
 ```
 kubectl get node minikube -o yaml | grep allocatable -A2
 ```
@@ -104,9 +104,9 @@ It shows it is setting a resource limit for cpu as 10.
 This is what causes the above error in the deployment pod as there is insufficient cpu
 
 
-### Fix 
+## Fix 
 
-#### Current code of deployment has cpu limit as 10
+### Current code of deployment has cpu limit as 10
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -135,7 +135,7 @@ spec:
 
 ```
 
-#### Change the cpu limit to 1 as below
+### Change the cpu limit to 1 as below
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -164,7 +164,7 @@ spec:
 
 ```
 
-#### Apply the changes and check the status of the pod
+### Apply the changes and check the status of the pod
 ```
 kubectl apply -f deployment.yml -n sre
 deployment.apps/upcommerce-app-two created
