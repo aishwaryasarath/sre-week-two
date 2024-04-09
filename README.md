@@ -5,9 +5,37 @@ Your teammate at UpCommerce, has just pushed an update after some changes made t
 
 Deploy the code in this repo following the same steps as outlined in [this](https://github.com/aishwaryasarath/sre-task-repo) repo.
 
-## Root cause
+## Troubleshooting
+
+### List the deployment, it shows upcommerce-app-two deployment Ready 0/1 whereas it should show Ready 1/1
 ```
-upcommerce-app-two-65745f9d8b-j9scl -n sre
+kubectl get deployment -n sre
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+grafana                             1/1     1            1           3m41s
+prometheus-kube-state-metrics       1/1     1            1           3m52s
+prometheus-prometheus-pushgateway   1/1     1            1           3m52s
+prometheus-server                   1/1     1            1           3m52s
+upcommerce-app-two                  0/1     1            0           17s
+```
+
+### Now list the pods
+```
+kubectl get pods -n sre
+NAME                                                READY   STATUS    RESTARTS   AGE
+grafana-596df764cb-n8sh8                            1/1     Running   0          5m36s
+prometheus-alertmanager-0                           1/1     Running   0          5m47s
+prometheus-kube-state-metrics-65468947fb-57sz5      1/1     Running   0          5m47s
+prometheus-prometheus-node-exporter-vtnnc           1/1     Running   0          5m47s
+prometheus-prometheus-pushgateway-76976dc66-kjkjs   1/1     Running   0          5m47s
+prometheus-server-8444b5b7f7-2lxsw                  2/2     Running   0          5m47s
+upcommerce-app-two-56cff9c64d-fsbrc                 0/1     Pending   0          2m12s
+```
+
+### Run this command to describe the pod that shows as pending 
+```
+kubectl describe pod upcommerce-app-two-65745f9d8b-j9scl -n sre
+
+
 Name:             upcommerce-app-two-65745f9d8b-j9scl
 Namespace:        sre
 Priority:         0
@@ -54,13 +82,17 @@ Events:
   Warning  FailedScheduling  24s   default-scheduler  0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod..
 ```
 
-## Cause
+## Root Cause
 Codespace free tier can have only a max of 1 cpu. Anything more than that fails.
+Thus resulting in the failure in deployment with the reason FailedScheduling
+```
+0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod..
+```
 
 
-## Fix
+## Fix 
 
-### Current code of deployment
+### Current code of deployment has cpu limit as 10
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -89,7 +121,7 @@ spec:
 
 ```
 
-### Change the cpu as below
+### Change the cpu limit to 1 as below
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -116,4 +148,19 @@ spec:
               cpu: "1"
               memory: "4Gi"
 
+```
+
+### Apply the changes and check the status of the pod
+```
+kubectl apply -f deployment.yml -n sre
+deployment.apps/upcommerce-app-two created
+kubectl get pod -n sre
+NAME                                                READY   STATUS    RESTARTS   AGE
+grafana-596df764cb-n8sh8                            1/1     Running   0          12m
+prometheus-alertmanager-0                           1/1     Running   0          12m
+prometheus-kube-state-metrics-65468947fb-57sz5      1/1     Running   0          12m
+prometheus-prometheus-node-exporter-vtnnc           1/1     Running   0          12m
+prometheus-prometheus-pushgateway-76976dc66-kjkjs   1/1     Running   0          12m
+prometheus-server-8444b5b7f7-2lxsw                  2/2     Running   0          12m
+upcommerce-app-two-846fd54f5d-rn9x4                 1/1     Running   0          4s
 ```
