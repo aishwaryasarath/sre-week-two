@@ -32,7 +32,7 @@ prometheus-server-8444b5b7f7-2lxsw                  2/2     Running   0         
 upcommerce-app-two-56cff9c64d-fsbrc                 0/1     Pending   0          2m12s
 ```
 
-### Run this command to describe the pod that shows as pending 
+### Describe the problematic pod 
 ```
 kubectl describe pod upcommerce-app-two-65745f9d8b-j9scl -n sre
 
@@ -98,10 +98,10 @@ kubectl get node minikube -o yaml | grep allocatable -A2
 ```
 <img width="535" alt="image" src="https://github.com/aishwaryasarath/sre-week-two/assets/49971693/98d25ac3-60a6-497d-8cee-bdd278ca80bd">
 
-Check the cpu limit in the deployment.yml
+### Check the cpu limit in the deployment manifest
 It shows it is setting a resource limit for cpu as 10.
 
-This is what causes the above error in the deployment pod as there is insufficient cpu
+:memo: This is what causes the above error in the deployment pod as there is insufficient cpu
 
 
 ## Fix 
