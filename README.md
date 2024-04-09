@@ -83,8 +83,17 @@ Events:
 ```
 
 ## Root Cause
-Codespace free tier can have only a max of 1 cpu. Anything more than that fails.
-Thus resulting in the failure in deployment with the reason FailedScheduling
+
+### Check minikube allocatable CPUs.
+```
+kubectl get node minikube -o yaml | grep allocatable -A2
+```
+<img width="535" alt="image" src="https://github.com/aishwaryasarath/sre-week-two/assets/49971693/98d25ac3-60a6-497d-8cee-bdd278ca80bd">
+
+Check the cpu limit in the deployment.yml
+It shows it is setting a resource limit for cpu as 10.
+
+This is what causes the below error in the deployment pod as there is insufficient cpu
 ```
 0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod..
 ```
