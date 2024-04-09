@@ -101,7 +101,7 @@ kubectl get node minikube -o yaml | grep allocatable -A2
 ### Check the cpu limit in the deployment manifest
 It shows it is setting a resource limit for cpu as 10.
 
-:memo: This is what causes the above error in the deployment pod as there is insufficient cpu
+> :memo: This is what causes the above error in the deployment pod as there is insufficient cpu
 
 
 ## Fix 
